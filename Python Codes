@@ -1,0 +1,44 @@
+from interfaceware_client import IguanaClient
+from interfaceware_client.message import Message
+
+ip_address = "localhost"
+port = 55000
+
+client = IguanaClient(ip_address, port)
+client.connect()
+
+message_type = "ADT_A01"
+data = {
+    "MSH": {
+        "SendingFacility": "TEST_SENDING",
+        "ReceivingFacility": "TEST_RECEIVING",
+    },
+    "PID": {
+        "PatientID": "123456789",
+        "PatientName": {
+            "FamilyName": "Yılmaz",
+            "GivenName": "Mehmet",
+        },
+        "PatientAddress": {
+            "Street": "Atatürk Caddesi",
+            "City": "Alanya",
+            "StateProvince": "Antalya",
+            "PostalCode": "07400",
+            "Country": "Türkiye",
+        },
+        "PatientDateOfBirth": "19800101",
+        "PatientGender": "M",
+    },
+}
+message = Message(message_type, data)
+
+client.send_message(message)
+
+received_message = client.receive_message()
+
+if received_message is not None:
+    print(received_message)
+else:
+    print("Mesaj alınamadı.")
+
+client.disconnect()
